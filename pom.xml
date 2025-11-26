@@ -13,7 +13,7 @@
 
 	<properties>
 		<!-- OUR VERSION -->
-		<revision>1.0.0-SNAPSHOT</revision>
+		<revision>1.0.0</revision>
 
 		<!-- DEPENDENCIES VERSION -->
 		<jdk.version>21</jdk.version>

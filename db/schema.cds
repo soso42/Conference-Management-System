@@ -14,7 +14,7 @@ entity Session {
   key id            : UUID;
       title         : String(100);
       speaker       : String(100);
-      startDate     : Date;
-      endDate       : Date;
+      startTime     : Time;
+      endTime       : Time;
       conference    : Association to one Conference @(cds.persistence.foreignKey: 'conference_id');
 }
