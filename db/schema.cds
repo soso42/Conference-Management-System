@@ -45,3 +45,17 @@ entity Conference2Sponsor {
     key conference : Association to Conference;
     key sponsor    : Association to Sponsor;
 }
+
+type TicketType : String(20) enum {
+    REGULAR;
+    VIP;
+}
+
+@cds.persistence.name: 'tickets'
+entity Ticket {
+    key id         : UUID;
+        type       : TicketType;
+        price      : Integer;
+
+        conference : Association to one Conference;
+}
