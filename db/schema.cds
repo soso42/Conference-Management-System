@@ -25,3 +25,23 @@ entity Session {
         endTime    : Time;
         conference : Association to one Conference @(cds.persistence.foreignKey: 'conference_id');
 }
+
+type SponsorshipLevel : String(20) enum {
+    STANDARD;
+    PREMIUM;
+}
+
+@cds.persistence.name: 'sponsors'
+entity Sponsor {
+    key id               : UUID;
+        name             : String(100);
+
+        @cds.persistence.name: 'sponsorship_level'
+        sponsorshipLevel : SponsorshipLevel;
+}
+
+@cds.persistence.name: 'm2m_conferences_sponsors'
+entity Conference2Sponsor {
+    key conference : Association to Conference;
+    key sponsor    : Association to Sponsor;
+}
