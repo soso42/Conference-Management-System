@@ -59,3 +59,19 @@ entity Ticket {
 
         conference : Association to one Conference;
 }
+
+@cds.persistence.name: 'attendees'
+entity Attendee {
+    key id        : UUID;
+
+        @cds.persistence.name: 'first_name'
+        firstName : String(100);
+
+        @cds.persistence.name: 'last_name'
+        lastName  : String(100);
+
+        email     : String(100);
+
+        @cds.persistence.name: 'ticket_id'
+        ticket    : Association to one Ticket;
+}

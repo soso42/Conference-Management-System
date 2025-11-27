@@ -47,7 +47,7 @@
                 speaker       VARCHAR(100) NOT NULL,
                 start_time    TIME,
                 end_time      TIME,
-                conference_id UUID,
+                conference_id UUID         NOT NULL,
 
                 CONSTRAINT pk_sessions PRIMARY KEY (id),
                 CONSTRAINT fk_sessions_conference_id FOREIGN KEY (conference_id) REFERENCES conferences (id)
@@ -98,7 +98,7 @@
 
     <changeSet id="004-create-table-tickets" author="Soso Janashvili">
         <sql>
-            CREATE TYPE ticket_type AS ENUM (
+            CREATE TYPE ticket_type_enum AS ENUM (
                 'REGULAR',
                 'VIP'
             );
@@ -106,9 +106,9 @@
             CREATE TABLE tickets
             (
                 id            UUID DEFAULT gen_random_uuid(),
-                type          ticket_type NOT NULL,
-                price         INTEGER     NOT NULL,
-                conference_id UUID        NOT NULL,
+                type          ticket_type_enum NOT NULL,
+                price         INTEGER          NOT NULL,
+                conference_id UUID             NOT NULL,
 
                 CONSTRAINT pk_tickets PRIMARY KEY (id),
                 CONSTRAINT fk_tickets_conference_id FOREIGN KEY (conference_id) REFERENCES conferences (id)
@@ -117,6 +117,28 @@
         <rollback>
             <sql>
                 DROP TABLE tickets;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="005-create-table-attendees" author="Soso Janashvili">
+        <sql>
+            CREATE TABLE attendees
+            (
+                id         UUID DEFAULT gen_random_uuid(),
+                first_name VARCHAR(100),
+                last_name  VARCHAR(100),
+                email      VARCHAR(100) NOT NULL,
+
+                ticket_id  UUID         NOT NULL UNIQUE,
+
+                CONSTRAINT pk_attendees PRIMARY KEY (id),
+                CONSTRAINT fk_attendees_ticket_id FOREIGN KEY (ticket_id) REFERENCES tickets (id)
+            );
+        </sql>
+        <rollback>
+            <sql>
+                DROP TABLE attendees;
             </sql>
         </rollback>
     </changeSet>
