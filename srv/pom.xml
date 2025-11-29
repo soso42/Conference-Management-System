@@ -130,7 +130,8 @@
 						<configuration>
 							<commands>
 								<command>build --for java</command>
-								<command>deploy --to h2 --with-mocks --dry --out "${project.basedir}/src/main/resources/schema-h2.sql"</command>
+<!--								<command>deploy &#45;&#45;to h2 &#45;&#45;with-mocks &#45;&#45;dry &#45;&#45;out "${project.basedir}/src/main/resources/schema-h2.sql"</command>-->
+<!--								<command>deploy &#45;&#45;to postgres &#45;&#45;with-mocks &#45;&#45;dry &#45;&#45;out "${project.basedir}/src/main/resources/schema-postgres.sql"</command>-->
 							</commands>
 						</configuration>
 					</execution>

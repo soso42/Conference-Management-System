@@ -7,7 +7,7 @@
         <sql>
             CREATE TABLE cds_outbox_Messages
             (
-                id                   UUID NOT NULL,
+                id                   VARCHAR(36) NOT NULL,
                 timestamp            TIMESTAMP(7),
                 target               VARCHAR(255),
                 msg                  TEXT,
@@ -30,7 +30,7 @@
         <sql>
             CREATE TABLE conferences
             (
-                id          UUID DEFAULT gen_random_uuid(),
+                id          VARCHAR(36) DEFAULT gen_random_uuid(),
                 name        VARCHAR(100)  NOT NULL,
                 location    VARCHAR(100)  NOT NULL,
                 description VARCHAR(1000) NOT NULL,
@@ -42,12 +42,12 @@
 
             CREATE TABLE sessions
             (
-                id            UUID DEFAULT gen_random_uuid(),
+                id            VARCHAR(36) DEFAULT gen_random_uuid(),
                 title         VARCHAR(100) NOT NULL,
                 speaker       VARCHAR(100) NOT NULL,
                 start_time    TIME,
                 end_time      TIME,
-                conference_id UUID         NOT NULL,
+                conference_id VARCHAR(36)         NOT NULL,
 
                 CONSTRAINT pk_sessions PRIMARY KEY (id),
                 CONSTRAINT fk_sessions_conference_id FOREIGN KEY (conference_id) REFERENCES conferences (id)
@@ -70,7 +70,7 @@
 
             CREATE TABLE sponsors
             (
-                id                UUID DEFAULT gen_random_uuid(),
+                id                VARCHAR(36) DEFAULT gen_random_uuid(),
                 name              VARCHAR(100)           NOT NULL,
                 sponsorship_level sponsorship_level_enum NOT NULL,
 
@@ -79,8 +79,8 @@
 
             CREATE TABLE m2m_conferences_sponsors
             (
-                conference_id UUID NOT NULL,
-                sponsor_id    UUID NOT NULL,
+                conference_id VARCHAR(36) NOT NULL,
+                sponsor_id    VARCHAR(36) NOT NULL,
 
                 CONSTRAINT pk_m2m_conferences_sponsors PRIMARY KEY (conference_id, sponsor_id),
                 CONSTRAINT fk_m2m_conferences_sponsors_conference_id__conferences_id FOREIGN KEY (conference_id) REFERENCES conferences (id),
@@ -105,10 +105,10 @@
 
             CREATE TABLE tickets
             (
-                id            UUID DEFAULT gen_random_uuid(),
+                id            VARCHAR(36) DEFAULT gen_random_uuid(),
                 type          ticket_type_enum NOT NULL,
                 price         INTEGER          NOT NULL,
-                conference_id UUID             NOT NULL,
+                conference_id VARCHAR(36)      NOT NULL,
 
                 CONSTRAINT pk_tickets PRIMARY KEY (id),
                 CONSTRAINT fk_tickets_conference_id FOREIGN KEY (conference_id) REFERENCES conferences (id)
@@ -125,12 +125,12 @@
         <sql>
             CREATE TABLE attendees
             (
-                id         UUID DEFAULT gen_random_uuid(),
+                id         VARCHAR(36) DEFAULT gen_random_uuid(),
                 first_name VARCHAR(100),
                 last_name  VARCHAR(100),
                 email      VARCHAR(100) NOT NULL,
 
-                ticket_id  UUID         NOT NULL UNIQUE,
+                ticket_id  VARCHAR(36)  NOT NULL UNIQUE,
 
                 CONSTRAINT pk_attendees PRIMARY KEY (id),
                 CONSTRAINT fk_attendees_ticket_id FOREIGN KEY (ticket_id) REFERENCES tickets (id)

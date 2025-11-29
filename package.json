@@ -6,5 +6,21 @@
   "repository": "<Add your repository here>",
   "devDependencies": {
     "@sap/cds-dk": "^9.4.1"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "postgres"
+      },
+      "postgres": {
+        "kind": "postgres",
+        "credentials": {
+          "url": "postgres://root:1@localhost:5432/conference_db"
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "@cap-js/postgres": "^2.1.0"
   }
 }
