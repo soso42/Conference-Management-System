@@ -1,4 +1,4 @@
-using { Attendee } from '../db/schema';
+using { my.cms.Attendee as Attendee } from '../db/schema';
 
 service AttendeeService @(path:'/attendee') {
 

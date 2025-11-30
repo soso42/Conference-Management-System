@@ -1,4 +1,4 @@
-using { Sponsor } from '../db/schema';
+using { my.cms.Sponsor as Sponsor } from '../db/schema';
 
 service SponsorService @(path: '/sponsors') {
 

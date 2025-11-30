@@ -1,7 +1,7 @@
 using {
-    Conference,
-    Ticket,
-    Attendee
+    my.cms.Conference as Conference,
+    my.cms.Ticket as Ticket,
+    my.cms.Attendee as Attendee
 } from '../db/schema';
 
 service ConferenceService @(path: '/conferences') {

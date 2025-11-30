@@ -4,7 +4,7 @@ import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import org.springframework.stereotype.Component;
-import cds.gen.Conference;
+import cds.gen.my.cms.Conference;
 
 @Component
 @ServiceName("ConferenceService")

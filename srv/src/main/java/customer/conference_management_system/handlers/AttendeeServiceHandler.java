@@ -1,6 +1,6 @@
 package customer.conference_management_system.handlers;
 
-import cds.gen.Attendee;
+import cds.gen.my.cms.Attendee;
 import cds.gen.attendeeservice.Attendees_;
 import com.sap.cds.services.cds.CqnService;
 import com.sap.cds.services.handler.EventHandler;
