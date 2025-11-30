@@ -13,7 +13,7 @@ public class CustomServiceHandler implements EventHandler {
     @Before(event = { "CREATE", "UPDATE" }, entity = "ConferenceService.Conferences")
     public void beforeCreation(Conference conference) {
 
-        System.out.println("soso: event handler method was called.");
+//        System.out.println("soso: event handler method was called.");
 
 //        if (conference.getId() == null) {
 //            conference.setId(null);
