@@ -143,4 +143,39 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="006-change-enum-types-to-varchar" author="Soso Janashvili">
+        <sql>
+            ALTER TABLE tickets
+            ALTER COLUMN type TYPE VARCHAR(10);
+
+            DROP TYPE ticket_type_enum;
+
+            ALTER TABLE sponsors
+            ALTER COLUMN sponsorship_level TYPE VARCHAR(10);
+
+            DROP TYPE sponsorship_level_enum;
+        </sql>
+        <rollback>
+            <sql>
+                CREATE TYPE ticket_type_enum AS ENUM (
+                    'REGULAR',
+                    'VIP'
+                );
+
+                ALTER TABLE tickets
+                ALTER COLUMN type TYPE ticket_type_enum
+                USING type::ticket_type_enum;
+
+                CREATE TYPE sponsorship_level_enum AS ENUM (
+                    'STANDARD',
+                    'PREMIUM'
+                );
+
+                ALTER TABLE sponsors
+                ALTER COLUMN sponsorship_level TYPE sponsorship_level_enum
+                USING sponsorship_level::sponsorship_level_enum;
+            </sql>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
