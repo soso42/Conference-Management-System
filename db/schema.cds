@@ -1,7 +1,5 @@
 using {cuid} from '@sap/cds/common';
 
-namespace my.cms;
-
 @cds.persistence.name: 'conferences'
 entity Conference : cuid {
     name        : String(100);

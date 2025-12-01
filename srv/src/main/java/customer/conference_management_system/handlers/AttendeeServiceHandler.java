@@ -13,17 +13,21 @@ import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
 import com.sap.cds.ql.Insert;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 @Component
 @ServiceName({ "AttendeeService" })
-@RequiredArgsConstructor
 public class AttendeeServiceHandler implements EventHandler {
 
     private final PersistenceService persistenceService;
+
+    @Autowired
+    public AttendeeServiceHandler(PersistenceService persistenceService) {
+        this.persistenceService = persistenceService;
+    }
 
 
     @Before(

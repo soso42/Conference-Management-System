@@ -1,4 +1,7 @@
-using { Attendee, Ticket } from '../db/schema';
+using {
+    Attendee,
+    Ticket
+} from '../db/schema';
 
 service AttendeeService @(path:'/attendee') {
 
