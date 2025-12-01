@@ -9,7 +9,8 @@ service ConferenceService @(path: '/conferences') {
     entity Conferences as
         projection on Conference {
             *,
-            tickets
+            tickets,
+            virtual null as numOfSessions : Integer
         };
 
     entity Tickets     as projection on Ticket;
