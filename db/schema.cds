@@ -14,6 +14,9 @@ entity Conference : cuid {
 
     tickets     : Association to many Ticket
                       on tickets.conference = $self;
+
+    sessions    : Composition of many Session
+                      on sessions.conference = $self;
 }
 
 @cds.persistence.name: 'sessions'
@@ -26,6 +29,7 @@ entity Session : cuid {
 
     @cds.persistence.name: 'end_time'
     endTime    : Time;
+
     conference : Association to one Conference;
 }
 

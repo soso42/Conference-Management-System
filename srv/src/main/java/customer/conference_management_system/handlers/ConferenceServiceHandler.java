@@ -1,9 +1,22 @@
 package customer.conference_management_system.handlers;
 
+import cds.gen.Attendee;
+import cds.gen.Attendee_;
+import cds.gen.Ticket;
+import cds.gen.Ticket_;
+import cds.gen.conferenceservice.ConferencesCancelConferenceContext;
+import com.sap.cds.ql.Delete;
+import com.sap.cds.ql.Select;
+import com.sap.cds.ql.cqn.CqnAnalyzer;
+import com.sap.cds.ql.cqn.CqnDelete;
+import com.sap.cds.ql.cqn.CqnSelect;
+import com.sap.cds.reflect.CdsModel;
 import com.sap.cds.services.cds.CqnService;
 import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.After;
+import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
+import com.sap.cds.services.persistence.PersistenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -12,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import cds.gen.conferenceservice.Conferences;
 import cds.gen.conferenceservice.Conferences_;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,12 +36,48 @@ import java.util.Map;
 public class ConferenceServiceHandler implements EventHandler {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final PersistenceService persistenceService;
+    private final CdsModel model;
 
     @Autowired
-    public ConferenceServiceHandler(NamedParameterJdbcTemplate jdbcTemplate) {
+    public ConferenceServiceHandler(NamedParameterJdbcTemplate jdbcTemplate, PersistenceService persistenceService, CdsModel model) {
         this.jdbcTemplate = jdbcTemplate;
+        this.persistenceService = persistenceService;
+        this.model = model;
     }
 
+
+    @Transactional
+    @On(event = ConferencesCancelConferenceContext.CDS_NAME)
+    public String onCancelConference(ConferencesCancelConferenceContext context) {
+        // Extract conference id from url
+        CqnAnalyzer analyzer = CqnAnalyzer.create(model);
+        Map<String, Object> keys = analyzer.analyze(context.getCqn()).targetKeys();
+        String conferenceId = (String) keys.get(Conferences.ID);
+
+        CqnSelect ticketSelectQuery = Select.from(Ticket_.class)
+                .where(t -> t.conference_ID().eq(conferenceId));
+        List<String> ticketIds = persistenceService.run(ticketSelectQuery).stream()
+                .map(row -> row.as(Ticket.class).getId())
+                .toList();
+
+        CqnSelect attendeeSelectQuery = Select.from(Attendee_.class)
+                .where(a -> a.get(Attendee.TICKET_ID).in(ticketIds));
+
+        List<Attendee> attendees = persistenceService.run(attendeeSelectQuery).stream()
+                .map(row -> row.as(Attendee.class))
+                .toList();
+
+        attendees.forEach(attendee -> {
+            System.out.println("Attendee: " + attendee.getId() + " " + attendee.getFirstName() + " was notified about cancellation");
+        });
+
+        // Delete tickets and associated attendees
+        CqnDelete ticketDeleteQuery = Delete.from(Ticket_.class).where(t -> t.conference_ID().eq(conferenceId));
+        persistenceService.run(ticketDeleteQuery);
+
+        return "Conference successfully cancelled";
+    }
 
     @After(event = CqnService.EVENT_READ, entity = Conferences_.CDS_NAME)
     public void afterRead(List<Conferences> conferences) {
