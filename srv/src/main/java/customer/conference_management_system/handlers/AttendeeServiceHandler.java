@@ -22,25 +22,18 @@ import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
 import com.sap.cds.ql.Insert;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @Component
-@ServiceName({ "AttendeeService", AttendeeService_.CDS_NAME })
+@ServiceName( AttendeeService_.CDS_NAME )
+@RequiredArgsConstructor
 public class AttendeeServiceHandler implements EventHandler {
 
     private final PersistenceService persistenceService;
-    private final NamedParameterJdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public AttendeeServiceHandler(PersistenceService persistenceService, NamedParameterJdbcTemplate jdbcTemplate) {
-        this.persistenceService = persistenceService;
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
 
     @Before(

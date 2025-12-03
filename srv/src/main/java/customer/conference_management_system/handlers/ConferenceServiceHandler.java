@@ -17,7 +17,7 @@ import com.sap.cds.services.handler.annotations.After;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -33,18 +33,12 @@ import java.util.Map;
 
 @Component
 @ServiceName("ConferenceService")
+@RequiredArgsConstructor
 public class ConferenceServiceHandler implements EventHandler {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final PersistenceService persistenceService;
     private final CdsModel model;
-
-    @Autowired
-    public ConferenceServiceHandler(NamedParameterJdbcTemplate jdbcTemplate, PersistenceService persistenceService, CdsModel model) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.persistenceService = persistenceService;
-        this.model = model;
-    }
 
 
     @Transactional
