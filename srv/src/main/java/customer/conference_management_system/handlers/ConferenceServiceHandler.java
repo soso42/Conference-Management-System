@@ -1,5 +1,6 @@
 package customer.conference_management_system.handlers;
 
+import cds.gen.Conference;
 import cds.gen.Attendee;
 import cds.gen.Attendee_;
 import cds.gen.Ticket;
@@ -14,8 +15,10 @@ import com.sap.cds.reflect.CdsModel;
 import com.sap.cds.services.cds.CqnService;
 import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.After;
+import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
+import com.sap.cds.services.messages.Messages;
 import com.sap.cds.services.persistence.PersistenceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -39,7 +42,23 @@ public class ConferenceServiceHandler implements EventHandler {
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final PersistenceService persistenceService;
     private final CdsModel model;
+    private final Messages messages;
 
+
+    @Before(event = CqnService.EVENT_CREATE, entity = Conferences_.CDS_NAME)
+    public void validateConferenceCreationRequest(Conference conference) {
+        validateField(conference.getName(), "Conference name is null or empty",Conference.NAME );
+        validateField(conference.getDescription(), "Conference description is null or empty", Conference.DESCRIPTION);
+        validateField(conference.getLocation(), "Conference location is null or empty", Conference.LOCATION);
+        validateField(conference.getStartDate(), "Conference start date is null", Conference.START_DATE);
+        validateField(conference.getEndDate(), "Conference end date is null", Conference.END_DATE);
+    }
+
+    private void validateField(Object field, String msg, String target) {
+        if (field == null || (field instanceof String && ((String) field).isEmpty())) {
+            messages.error(msg, target);
+        }
+    }
 
     @Transactional
     @On(event = ConferencesCancelConferenceContext.CDS_NAME)
