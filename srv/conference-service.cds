@@ -1,13 +1,9 @@
-using {
-    Conference,
-    Ticket,
-    Attendee
-} from '../db/schema';
+using { my.conference as my } from '../db/schema';
 
 service ConferenceService @(path: '/conferences') {
 
     entity Conferences as
-        projection on Conference {
+        projection on my.Conferences {
             key ID,
             *,
             tickets,
@@ -17,15 +13,7 @@ service ConferenceService @(path: '/conferences') {
             action cancelConference() returns String;
         }
 
-    entity Tickets     as projection on Ticket;
-    entity Attendees   as projection on Attendee;
-
-//     action cancelConference() returns String;
-
-//     entity Conference {
-//         key ID : UUID
-//     } actions {
-//         action boundAction() returns String;
-//     }
+    entity Tickets     as projection on my.Tickets;
+    entity Attendees   as projection on my.Attendees;
 
 }

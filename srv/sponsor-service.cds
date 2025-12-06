@@ -1,7 +1,7 @@
-using { Sponsor } from '../db/schema';
+using { my.conference as my } from '../db/schema';
 
 service SponsorService @(path: '/sponsors') {
 
-    entity Sponsors as projection on Sponsor;
+    entity Sponsors as projection on my.Sponsors;
 
 }
