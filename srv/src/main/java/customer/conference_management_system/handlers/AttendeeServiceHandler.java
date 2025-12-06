@@ -1,12 +1,11 @@
 package customer.conference_management_system.handlers;
 
-import cds.gen.Attendee;
-import cds.gen.Attendee_;
-import cds.gen.Ticket;
-import cds.gen.TicketType;
-import cds.gen.Ticket_;
+import cds.gen.my.conference.Attendees;
+import cds.gen.my.conference.Attendees_;
+import cds.gen.my.conference.Tickets;
+import cds.gen.my.conference.TicketType;
+import cds.gen.my.conference.Tickets_;
 import cds.gen.attendeeservice.AttendeeService_;
-import cds.gen.attendeeservice.Attendees_;
 import cds.gen.attendeeservice.RegisterAttendeeContext;
 import com.sap.cds.Result;
 import com.sap.cds.Struct;
@@ -40,18 +39,18 @@ public class AttendeeServiceHandler implements EventHandler {
             event = CqnService.EVENT_CREATE,
             entity = Attendees_.CDS_NAME
     )
-    public void beforeCreation(Attendee attendee) {
+    public void beforeCreation(Attendees attendee) {
 
-        Ticket newTicket = Struct.create(Ticket.class);
+        Tickets newTicket = Struct.create(Tickets.class);
         newTicket.setType(TicketType.REGULAR);
         newTicket.setPrice(123);
         newTicket.setConference(Map.of("ID", "22cbcaaa-af0c-4ecb-affb-27f487e85674"));
 
         // Persist the ticket directly using PersistenceService
         Result result = persistenceService.run(
-                Insert.into(Ticket_.CDS_NAME).entry(newTicket)
+                Insert.into(Tickets_.CDS_NAME).entry(newTicket)
         );
-        Ticket savedTicket = result.first().get().as(Ticket.class);
+        Tickets savedTicket = result.first().get().as(Tickets.class);
 
         attendee.setTicket(savedTicket);
     }
@@ -59,10 +58,10 @@ public class AttendeeServiceHandler implements EventHandler {
     @Transactional
     @On(event = RegisterAttendeeContext.CDS_NAME)
     public void onRegisterAttendee(RegisterAttendeeContext context) {
-        CqnSelect query = Select.from(Attendee_.CDS_NAME)
+        CqnSelect query = Select.from(Attendees_.CDS_NAME)
                 .where(a -> a.get("ID").eq(context.getAttendeeId()));
 
-        Attendee attendeeEntity = persistenceService.run(query).single(Attendee.class);
+        Attendees attendeeEntity = persistenceService.run(query).single(Attendees.class);
 
         if (attendeeEntity.getTicketId() != null) {
             // Attendee already has a ticket and is already registered, exiting.
@@ -70,18 +69,18 @@ public class AttendeeServiceHandler implements EventHandler {
             return;
         }
 
-        Ticket ticket = Struct.create(Ticket.class);
+        Tickets ticket = Struct.create(Tickets.class);
         ticket.setType(TicketType.REGULAR);
         ticket.setPrice(123);
         ticket.setConference(Map.of("ID", context.getConferenceId()));
 
-        CqnInsert insertQuery = Insert.into(Ticket_.CDS_NAME).entry(ticket);
+        CqnInsert insertQuery = Insert.into(Tickets_.CDS_NAME).entry(ticket);
         Result insertResult = persistenceService.run(insertQuery);
-        String ticketId = insertResult.single(Ticket.class).getId();
+        String ticketId = insertResult.single(Tickets.class).getId();
 
         attendeeEntity.setTicketId(ticketId);
 
-        CqnUpdate updateQuery = Update.entity(Attendee_.CDS_NAME).entry(attendeeEntity);
+        CqnUpdate updateQuery = Update.entity(Attendees_.CDS_NAME).entry(attendeeEntity);
         persistenceService.run(updateQuery);
 
         context.setResult("Attendee was registered to Conference successfully");

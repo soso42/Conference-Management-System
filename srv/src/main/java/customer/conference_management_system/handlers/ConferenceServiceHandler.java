@@ -1,10 +1,10 @@
 package customer.conference_management_system.handlers;
 
-import cds.gen.Conference;
-import cds.gen.Attendee;
-import cds.gen.Attendee_;
-import cds.gen.Ticket;
-import cds.gen.Ticket_;
+//import cds.gen.my.conference.Conferences;
+import cds.gen.my.conference.Attendees;
+import cds.gen.my.conference.Attendees_;
+import cds.gen.my.conference.Tickets;
+import cds.gen.my.conference.Tickets_;
 import cds.gen.conferenceservice.ConferencesCancelConferenceContext;
 import com.sap.cds.ql.Delete;
 import com.sap.cds.ql.Select;
@@ -46,12 +46,12 @@ public class ConferenceServiceHandler implements EventHandler {
 
 
     @Before(event = CqnService.EVENT_CREATE, entity = Conferences_.CDS_NAME)
-    public void validateConferenceCreationRequest(Conference conference) {
-        validateField(conference.getName(), "Conference name is null or empty",Conference.NAME );
-        validateField(conference.getDescription(), "Conference description is null or empty", Conference.DESCRIPTION);
-        validateField(conference.getLocation(), "Conference location is null or empty", Conference.LOCATION);
-        validateField(conference.getStartDate(), "Conference start date is null", Conference.START_DATE);
-        validateField(conference.getEndDate(), "Conference end date is null", Conference.END_DATE);
+    public void validateConferenceCreationRequest(Conferences conference) {
+        validateField(conference.getName(), "Conference name is null or empty", Conferences.NAME );
+        validateField(conference.getDescription(), "Conference description is null or empty", Conferences.DESCRIPTION);
+        validateField(conference.getLocation(), "Conference location is null or empty", Conferences.LOCATION);
+        validateField(conference.getStartDate(), "Conference start date is null", Conferences.START_DATE);
+        validateField(conference.getEndDate(), "Conference end date is null", Conferences.END_DATE);
     }
 
     private void validateField(Object field, String msg, String target) {
@@ -68,17 +68,17 @@ public class ConferenceServiceHandler implements EventHandler {
         Map<String, Object> keys = analyzer.analyze(context.getCqn()).targetKeys();
         String conferenceId = (String) keys.get(Conferences.ID);
 
-        CqnSelect ticketSelectQuery = Select.from(Ticket_.class)
+        CqnSelect ticketSelectQuery = Select.from(Tickets_.class)
                 .where(t -> t.conference_ID().eq(conferenceId));
         List<String> ticketIds = persistenceService.run(ticketSelectQuery).stream()
-                .map(row -> row.as(Ticket.class).getId())
+                .map(row -> row.as(Tickets.class).getId())
                 .toList();
 
-        CqnSelect attendeeSelectQuery = Select.from(Attendee_.class)
-                .where(a -> a.get(Attendee.TICKET_ID).in(ticketIds));
+        CqnSelect attendeeSelectQuery = Select.from(Attendees_.class)
+                .where(a -> a.get(Attendees.TICKET_ID).in(ticketIds));
 
-        List<Attendee> attendees = persistenceService.run(attendeeSelectQuery).stream()
-                .map(row -> row.as(Attendee.class))
+        List<Attendees> attendees = persistenceService.run(attendeeSelectQuery).stream()
+                .map(row -> row.as(Attendees.class))
                 .toList();
 
         attendees.forEach(attendee -> {
@@ -86,7 +86,7 @@ public class ConferenceServiceHandler implements EventHandler {
         });
 
         // Delete tickets and associated attendees
-        CqnDelete ticketDeleteQuery = Delete.from(Ticket_.class).where(t -> t.conference_ID().eq(conferenceId));
+        CqnDelete ticketDeleteQuery = Delete.from(Tickets_.class).where(t -> t.conference_ID().eq(conferenceId));
         persistenceService.run(ticketDeleteQuery);
 
         return "Conference successfully cancelled";
@@ -101,8 +101,8 @@ public class ConferenceServiceHandler implements EventHandler {
 
         String query = """
             select c.id as id, count(*) as count
-            from conferences c
-            join sessions s on s.conference_id = c.id
+            from my_conference_Conferences c
+            join my_conference_Sessions s on s.conference_id = c.id
             where c.id in (:ids)
             group by c.id;
         """;
