@@ -3,23 +3,23 @@
 spring:
 
   config.activate.on-profile: default
-#  sql:
-#    init:
-#      platform: h2
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    username: root
-    password: 1
-    url: jdbc:postgresql://localhost:5432/conference_db
-    hikari:
-      pool-name: HikariCP
-      maximum-pool-size: 10
-      minimum-idle: 5
-      idle-timeout: 30000
-
-  liquibase:
-    enabled: true
-    change-log: classpath:db/changelog/db.changelog-master.xml
+  sql:
+    init:
+      platform: h2
+#  datasource:
+#    driver-class-name: org.postgresql.Driver
+#    username: root
+#    password: 1
+#    url: jdbc:postgresql://localhost:5432/conference_db2
+#    hikari:
+#      pool-name: HikariCP
+#      maximum-pool-size: 10
+#      minimum-idle: 5
+#      idle-timeout: 30000
+#
+#  liquibase:
+#    enabled: true
+#    change-log: classpath:db/changelog/db.changelog-master.xml
 
 
 cds:
