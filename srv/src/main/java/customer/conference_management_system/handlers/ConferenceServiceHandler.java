@@ -1,11 +1,13 @@
 package customer.conference_management_system.handlers;
 
-//import cds.gen.my.conference.Conferences;
 import cds.gen.my.conference.Attendees;
 import cds.gen.my.conference.Attendees_;
 import cds.gen.my.conference.Tickets;
 import cds.gen.my.conference.Tickets_;
+import cds.gen.conferenceservice.Sessions_;
 import cds.gen.conferenceservice.ConferencesCancelConferenceContext;
+import com.sap.cds.Result;
+import com.sap.cds.ql.CQL;
 import com.sap.cds.ql.Delete;
 import com.sap.cds.ql.Select;
 import com.sap.cds.ql.cqn.CqnAnalyzer;
@@ -21,9 +23,6 @@ import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.messages.Messages;
 import com.sap.cds.services.persistence.PersistenceService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import cds.gen.conferenceservice.Conferences;
@@ -39,7 +38,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ConferenceServiceHandler implements EventHandler {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
     private final PersistenceService persistenceService;
     private final CdsModel model;
     private final Messages messages;
@@ -99,25 +97,21 @@ public class ConferenceServiceHandler implements EventHandler {
                 .map(Conferences::getId)
                 .toList();
 
-        String query = """
-            select c.id as id, count(*) as count
-            from my_conference_Conferences c
-            join my_conference_Sessions s on s.conference_id = c.id
-            where c.id in (:ids)
-            group by c.id;
-        """;
+        CqnSelect query = Select.from(Sessions_.class)
+                .columns(s -> s.conference_ID(),
+                        s -> CQL.count(s.ID()).as("count"))
+                .where(s -> s.conference_ID().in(confIds))
+                .groupBy(s -> s.conference_ID());
 
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("ids", confIds);
+        Result result = persistenceService.run(query);
+        Map<String, Long> mappedResult = new HashMap<>();
 
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(query, params);
-        Map<String, Integer> mappedResult = new HashMap<>();
-
-        while (rowSet.next()) {
-            String id = rowSet.getString("id");
-            Integer count = rowSet.getInt("count");
-            mappedResult.put(id, count);
-        }
+        result
+                .forEach(row -> {
+                    String id = (String) row.get(Sessions_.CONFERENCE_ID);
+                    Long count = ((Number) row.get("count")).longValue();
+                    mappedResult.put(id, count);
+                });
 
         conferences.forEach(c -> {
             c.setNumOfSessions(mappedResult.get(c.getId()));

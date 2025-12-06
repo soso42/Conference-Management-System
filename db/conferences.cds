@@ -4,6 +4,7 @@ using { cuid } from '@sap/cds/common';
 using { my.conference.Tickets } from './tickets';
 using { my.conference.Sessions } from './sessions';
 
+@odata.draft.enabled
 entity Conferences : cuid {
     name        : String(100);
     location    : String(100);

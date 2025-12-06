@@ -7,7 +7,7 @@ service ConferenceService @(path: '/conferences') {
             key ID,
             *,
             tickets,
-            virtual null as numOfSessions : Integer
+            virtual null as numOfSessions : Integer64
         }
         actions {
             action cancelConference() returns String;
