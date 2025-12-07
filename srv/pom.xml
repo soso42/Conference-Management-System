@@ -101,9 +101,19 @@
 				<version>4.24.0</version>
 				<configuration>
 					<searchPath>src/main/resources</searchPath>
-					<propertyFile>application.yaml</propertyFile>
+					<propertyFile>liquibase.properties</propertyFile>
 					<changeLogFile>db/changelog/db.changelog-master.yaml</changeLogFile>
+
+					<!-- Reference (your CDS-generated schema) -->
+<!--					<referenceUrl>offline:postgresql?snapshot=schema-postgres.sql</referenceUrl>-->
 				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.postgresql</groupId>
+						<artifactId>postgresql</artifactId>
+						<version>42.7.3</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 
 			<!-- SPRING BOOT PLUGIN -->
