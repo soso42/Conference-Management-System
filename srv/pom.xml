@@ -59,10 +59,10 @@
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.liquibase</groupId>-->
-<!--			<artifactId>liquibase-core</artifactId>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+		</dependency>
 
 		<!--  Tests  -->
 		<dependency>
@@ -91,6 +91,18 @@
 							<version>1.18.34</version>
 						</path>
 					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+
+			<!-- Liquibase Plugin -->
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<version>4.24.0</version>
+				<configuration>
+					<searchPath>src/main/resources</searchPath>
+					<propertyFile>application.yaml</propertyFile>
+					<changeLogFile>db/changelog/db.changelog-master.yaml</changeLogFile>
 				</configuration>
 			</plugin>
 
@@ -165,8 +177,8 @@
 						<configuration>
 							<commands>
 								<command>build --for java</command>
-								<command>deploy --to h2 --with-mocks --dry --out "${project.basedir}/src/main/resources/schema-h2.sql"</command>
-<!--								<command>deploy &#45;&#45;to postgres &#45;&#45;with-mocks &#45;&#45;dry &#45;&#45;out "${project.basedir}/src/main/resources/schema-postgres.sql"</command>-->
+<!--								<command>deploy &#45;&#45;to h2 &#45;&#45;with-mocks &#45;&#45;dry &#45;&#45;out "${project.basedir}/src/main/resources/schema-h2.sql"</command>-->
+								<command>deploy --to postgres --with-mocks --dry --out "${project.basedir}/src/main/resources/schema-postgres.sql"</command>
 							</commands>
 						</configuration>
 					</execution>

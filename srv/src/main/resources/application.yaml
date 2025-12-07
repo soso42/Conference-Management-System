@@ -6,21 +6,30 @@ spring:
   sql:
     init:
       platform: h2
-#  datasource:
-#    driver-class-name: org.postgresql.Driver
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: root
+    password: 1
+    url: jdbc:postgresql://localhost:5432/conference_db2
+    hikari:
+      pool-name: HikariCP
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.xml
+
+#changeLogFile: db.changelog-master.yaml
+#liquibase:
+#  command:
+#    url: jdbc:postgresql://localhost:5432/conference_db3
 #    username: root
 #    password: 1
-#    url: jdbc:postgresql://localhost:5432/conference_db2
-#    hikari:
-#      pool-name: HikariCP
-#      maximum-pool-size: 10
-#      minimum-idle: 5
-#      idle-timeout: 30000
-#
-#  liquibase:
-#    enabled: true
-#    change-log: classpath:db/changelog/db.changelog-master.xml
-
+#    referenceUrl: jdbc:h2:tcp://localhost:9090/mem:integration
+#    referenceUsername: dbuser
+#    referencePassword: letmein
 
 cds:
   data-source:
