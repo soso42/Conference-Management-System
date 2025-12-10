@@ -32,3 +32,9 @@ cds:
 #  data:
 #    sql:
 #      names: plain
+
+springdoc:
+  swagger-ui:
+    # Point this to the static file in resources/static/api-docs
+    url: /api-docs/ConferenceService.openapi3.json
+    path: /swagger-ui.html
